@@ -18,6 +18,7 @@ PaddleOCR model deployment.
 * First of all, you need to download the source code compiled package in the Linux environment from the opencv official website. Taking opencv3.4.7 as an example, the download command is as follows.
 
 ```
+cd deploy/cpp_infer
 wget https://github.com/opencv/opencv/archive/3.4.7.tar.gz
 tar -xf 3.4.7.tar.gz
 ```
@@ -78,9 +79,7 @@ opencv3/
 
 #### 1.2.1 Direct download and installation
 
-
-* Different cuda versions of the Linux inference library (based on GCC 4.8.2) are provided on the
-[Paddle inference library official website](https://www.paddlepaddle.org.cn/documentation/docs/en/develop/guides/05_inference_deployment/inference/build_and_install_lib_en.html). You can view and select the appropriate version of the inference library on the official website.
+[Paddle inference library official website](https://www.paddlepaddle.org.cn/documentation/docs/zh/2.0/guides/05_inference_deployment/inference/build_and_install_lib_cn.html). You can view and select the appropriate version of the inference library on the official website.
 
 
 * After downloading, use the following method to uncompress.
@@ -99,9 +98,10 @@ Finally you can see the following files in the folder of `paddle_inference/`.
 
 ```shell
 git clone https://github.com/PaddlePaddle/Paddle.git
+git checkout release/2.1
 ```
 
-* After entering the Paddle directory, the compilation method is as follows.
+* After entering the Paddle directory, the commands to compile the paddle inference library are as follows.
 
 ```shell
 rm -rf build
@@ -121,7 +121,7 @@ make -j
 make inference_lib_dist
 ```
 
-For more compilation parameter options, please refer to the official website of the Paddle C++ inference library:[https://www.paddlepaddle.org.cn/documentation/docs/en/develop/guides/05_inference_deployment/inference/build_and_install_lib_en.html](https://www.paddlepaddle.org.cn/documentation/docs/en/develop/guides/05_inference_deployment/inference/build_and_install_lib_en.html).
+For more compilation parameter options, please refer to the [document](https://www.paddlepaddle.org.cn/documentation/docs/zh/2.0/guides/05_inference_deployment/inference/build_and_install_lib_cn.html#congyuanmabianyi).
 
 
 * After the compilation process, you can see the following files in the folder of `build/paddle_inference_install_dir/`.
@@ -146,11 +146,11 @@ Among them, `paddle` is the Paddle library required for C++ prediction later, an
 ```
 inference/
 |-- det_db
-|   |--inference.pdparams
-|   |--inference.pdimodel
+|   |--inference.pdiparams
+|   |--inference.pdmodel
 |-- rec_rcnn
-|   |--inference.pdparams
-|   |--inference.pdparams
+|   |--inference.pdiparams
+|   |--inference.pdmodel
 ```
 
 
@@ -219,6 +219,7 @@ max_side_len  960 #  Limit the maximum image height and width to 960
 det_db_thresh  0.3 # Used to filter the binarized image of DB prediction, setting 0.-0.3 has no obvious effect on the result
 det_db_box_thresh  0.5 # DDB post-processing filter box threshold, if there is a missing box detected, it can be reduced as appropriate
 det_db_unclip_ratio  1.6 # Indicates the compactness of the text box, the smaller the value, the closer the text box to the text
+use_polygon_score 1 # Whether to use polygon box to calculate bbox score, 0 means to use rectangle box to calculate. Use rectangular box to calculate faster, and polygonal box more accurate for curved text area.
 det_model_dir  ./inference/det_db # Address of detection inference model
 
 # cls config
