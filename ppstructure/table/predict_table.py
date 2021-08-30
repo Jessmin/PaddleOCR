@@ -204,18 +204,51 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    if args.use_mp:
-        p_list = []
-        total_process_num = args.total_process_num
-        for process_id in range(total_process_num):
-            cmd = [sys.executable, "-u"] + sys.argv + [
-                "--process_id={}".format(process_id),
-                "--use_mp={}".format(False)
-            ]
-            p = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stdout)
-            p_list.append(p)
-        for p in p_list:
-            p.wait()
-    else:
-        main(args)
+    class config(object):
+        def __init__(self):
+            pass
+    args = config
+    # args.table_char_dict_path = 'ppocr/utils/dict/table_structure_dict_TAL.txt'
+    args.table_char_dict_path = 'ppocr/utils/dict/table_structure_dict.txt'
+    # args.table_char_type = 'ch'
+    args.table_char_type = 'en'
+    args.table_max_len = 488
+    args.enable_mkldnn = True
+    args.use_gpu = True
+    args.gpu_mem = 4000
+    args.use_tensorrt = False
+    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/table'
+    args.det_algorithm = 'DB'
+    args.det_limit_side_len = 736
+    args.det_db_thresh = 0.5
+    args.det_limit_type = 'min'
+    args.det_db_box_thresh = 0.5
+    args.det_db_unclip_ratio = 2.0
+    args.use_dilation = False
+    args.det_db_score_mode = 'fast'
+    args.benchmark = False
+    args.rec_image_shape = "3, 32, 320"
+    args.rec_char_type = 'ch'
+    args.rec_batch_num = 30
+    args.max_text_length = 20
+    args.rec_char_dict_path = './ppocr/utils/ppocr_keys_v1.txt'
+    args.use_space_char = True
+    args.det_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/ch_ppocr_server_v2.0/det'
+    args.rec_algorithm = "CRNN"
+    args.rec_model_dir =  '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/rec'
+    image_file = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/TableSegmentation/images/0001-0.png'
+    # img = cv2.imread(image_file)
+    text_sys = TableSystem(args)
+    input_dir = '/home/zhaohj/Documents/dataset/Table/TAL/val_img/output_table'
+    import glob
+    imgs = glob.glob(f'{input_dir}/*')
+    import tqdm
+    my_dict = {}
+    for img_path in tqdm.tqdm(imgs):
+        _, fname = os.path.split(img_path)
+        img = cv2.imread(img_path)
+        pred_html = text_sys(img)
+        my_dict[fname] = pred_html
+    import json
+    with open('result.json','w') as f:
+        f.write(json.dumps(my_dict, ensure_ascii=False))

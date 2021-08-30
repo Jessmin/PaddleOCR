@@ -133,4 +133,25 @@ def main(args):
 
 
 if __name__ == "__main__":
-    main(parse_args())
+    # main(parse_args())
+    config = './configs/table/table_mv3.yml'
+    class config(object):
+        def __init__(self):
+            pass
+    args = config
+    args.table_char_dict_path = 'ppocr/utils/dict/table_structure_dict_TAL.txt'
+    # args.table_char_type = 'ch'
+    args.table_char_type = 'en'
+    args.table_max_len = 488
+    args.use_gpu = True
+    args.gpu_mem = 4000
+    args.use_tensorrt = False
+    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
+    table_structurer = TableStructurer(args)
+    # image_file='/home/zhaohj/Documents/dataset/Table/TAL/val_img/output_table/0eb8e737d43748fa92986bb7524c686f.jpg'
+    image_file = './doc/table/1.png'
+    img = cv2.imread(image_file)
+    import copy
+    structure_res, elapse = table_structurer(copy.deepcopy(img))
+    print(structure_res)
+    

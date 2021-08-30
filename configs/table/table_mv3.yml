@@ -8,10 +8,10 @@ Global:
   # evaluation is run every 400 iterations after the 0th iteration
   eval_batch_step: [0, 400]
   cal_metric_during_train: True
-  pretrained_model: 
+  pretrained_model: /home/zhaohj/Documents/checkpoint/paddOCR/pretrained/table/en_ppocr_mobile_v2.0_table_structure_train/best_accuracy
   checkpoints: 
-  save_inference_dir:
-  use_visualdl: False
+  save_inference_dir: /home/zhaohj/Documents/checkpoint/paddOCR/TAL/table
+  use_visualdl: True
   infer_img: doc/imgs_words/ch/word_1.jpg
   # for data or label process
   character_dict_path: ppocr/utils/dict/table_structure_dict.txt
@@ -64,8 +64,8 @@ Metric:
 Train:
   dataset:
     name: PubTabDataSet
-    data_dir: train_data/table/pubtabnet/train/
-    label_file_path: train_data/table/pubtabnet/PubTabNet_2.0.0_train.jsonl
+    data_dir: /home/zhaohj/Documents/dataset/Table/TAL/train_img
+    label_file_path: /home/zhaohj/Documents/dataset/Table/TAL/train_paddle.json
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -84,15 +84,15 @@ Train:
           keep_keys: ['image', 'structure', 'bbox_list', 'sp_tokens', 'bbox_list_mask']
   loader:
     shuffle: True
-    batch_size_per_card: 32
+    batch_size_per_card: 16
     drop_last: True
     num_workers: 1
 
 Eval:
   dataset:
     name: PubTabDataSet
-    data_dir: train_data/table/pubtabnet/val/
-    label_file_path: train_data/table/pubtabnet/PubTabNet_2.0.0_val.jsonl
+    data_dir: /home/zhaohj/Documents/dataset/Table/TAL/train_img
+    label_file_path: /home/zhaohj/Documents/dataset/Table/TAL/val_paddle.json
     transforms:
       - DecodeImage: # load image
           img_mode: BGR

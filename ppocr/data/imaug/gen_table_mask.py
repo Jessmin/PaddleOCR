@@ -192,6 +192,7 @@ class ResizeTableImage(object):
         for cno in range(cell_num):
             if "bbox" in cells[cno]:
                 bbox = cells[cno]['bbox']
+                
                 bbox_list.append(bbox)
         return bbox_list
 
