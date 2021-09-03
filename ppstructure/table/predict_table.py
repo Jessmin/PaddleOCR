@@ -33,6 +33,8 @@ from ppocr.utils.logging import get_logger
 from ppstructure.table.matcher import distance, compute_iou
 from ppstructure.utility import parse_args
 import ppstructure.table.predict_structure as predict_strture
+import pycorrector
+
 
 logger = get_logger()
 
@@ -88,6 +90,11 @@ class TableSystem(object):
         rec_res, elapse = self.text_recognizer(img_crop_list)
         logger.debug("rec_res num  : {}, elapse : {}".format(
             len(rec_res), elapse))
+        # output_rec_res = []
+        # for item in rec_res:
+        #     txt, score = item
+        #     corrected_sent, detail = pycorrector.correct(txt)
+        #     output_rec_res.append([corrected_sent, score])
 
         pred_html, pred = self.rebuild_table(structure_res, dt_boxes, rec_res)
         return pred_html
@@ -217,7 +224,8 @@ if __name__ == "__main__":
     args.use_gpu = True
     args.gpu_mem = 4000
     args.use_tensorrt = False
-    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/table'
+    # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/table'
+    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
     args.det_algorithm = 'DB'
     args.det_limit_side_len = 736
     args.det_db_thresh = 0.5
@@ -229,7 +237,7 @@ if __name__ == "__main__":
     args.benchmark = False
     args.rec_image_shape = "3, 32, 320"
     args.rec_char_type = 'ch'
-    args.rec_batch_num = 30
+    args.rec_batch_num = 20
     args.max_text_length = 20
     args.rec_char_dict_path = './ppocr/utils/ppocr_keys_v1.txt'
     args.use_space_char = True
@@ -239,14 +247,33 @@ if __name__ == "__main__":
     image_file = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/TableSegmentation/images/0001-0.png'
     # img = cv2.imread(image_file)
     text_sys = TableSystem(args)
+    # # test case 
+    # input_dir = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/TableSegmentation/images'
+    # import glob
+    # imgs = glob.glob(f'{input_dir}/*')
+    # imgs.sort()
+    # import tqdm
+    # my_dict = {}
+    # for img_path in tqdm.tqdm(imgs):
+    #     _, fname = os.path.split(img_path)
+    #     img = cv2.imread(img_path)
+    #     pred_html = text_sys(img)
+    #     print(pred_html)
+    #     break
+    
+    # TAL case
     input_dir = '/home/zhaohj/Documents/dataset/Table/TAL/val_img/output_table'
     import glob
     imgs = glob.glob(f'{input_dir}/*')
+    imgs.sort()
     import tqdm
     my_dict = {}
     for img_path in tqdm.tqdm(imgs):
         _, fname = os.path.split(img_path)
         img = cv2.imread(img_path)
+        h,w,c = img.shape
+        if h>2000  or w>2000:
+            img = cv2.resize(img,(0,0), fx=0.8,fy=0.8)
         pred_html = text_sys(img)
         my_dict[fname] = pred_html
     import json

@@ -25,20 +25,30 @@ from engine.synthesisers import ImageSynthesiser
 
 
 def synth_image():
-    args = ArgsParser().parse_args()
+    # args = ArgsParser().parse_args()
     image_synthesiser = ImageSynthesiser()
-    style_image_path = args.style_image
-    img = cv2.imread(style_image_path)
-    text_corpus = args.text_corpus
-    language = args.language
-
-    synth_result = image_synthesiser.synth_image(text_corpus, img, language)
-    fake_fusion = synth_result["fake_fusion"]
-    fake_text = synth_result["fake_text"]
-    fake_bg = synth_result["fake_bg"]
-    cv2.imwrite("fake_fusion.jpg", fake_fusion)
-    cv2.imwrite("fake_text.jpg", fake_text)
-    cv2.imwrite("fake_bg.jpg", fake_bg)
+    # style_image_path = args.style_image
+    # img = cv2.imread(style_image_path)
+    # text_corpus = args.text_corpus
+    # language = args.language
+    input_img = '/home/zhaohj/Documents/dataset/rec/src_images'
+    output_img = '/home/zhaohj/Documents/dataset/rec/bg'
+    imgs = glob.glob(f'{input_img}/*.png')
+    language='ch'
+    text_corpus='红细胞'
+    for style_image_path in imgs:
+        _,fname = os.path.split(style_image_path)
+        img = cv2.imread(style_image_path)
+        synth_result = image_synthesiser.synth_image(text_corpus, img, language)
+        fake_bg = synth_result["fake_bg"]
+        cv2.imwrite(f'{output_img}/{fname}', fake_bg)
+        
+    # fake_fusion = synth_result["fake_fusion"]
+    # fake_text = synth_result["fake_text"]
+    
+    # cv2.imwrite("fake_fusion.jpg", fake_fusion)
+    # cv2.imwrite("fake_text.jpg", fake_text)
+    # cv2.imwrite("fake_bg.jpg", fake_bg)
 
 
 def batch_synth_images():
