@@ -29,59 +29,28 @@ logger = get_logger()
 
 
 def parse_args():
-    class config(object):
-        def __init__(self):
-            pass
-    args = config
-    # args.table_char_dict_path = 'ppocr/utils/dict/table_structure_dict_TAL.txt'
-    args.table_char_dict_path = 'ppocr/utils/dict/table_structure_dict.txt'
-    # args.table_char_type = 'ch'
-    args.table_char_type = 'en'
-    args.table_max_len = 488
-    args.enable_mkldnn = True
-    args.use_gpu = True
-    args.gpu_mem = 4000
-    args.use_tensorrt = False
-    # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/table'
-    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
-    args.det_algorithm = 'DB'
-    args.det_limit_side_len = 736
-    args.det_db_thresh = 0.5
-    args.det_limit_type = 'min'
-    args.det_db_box_thresh = 0.5
-    args.det_db_unclip_ratio = 2.0
-    args.use_dilation = False
-    args.det_db_score_mode = 'fast'
-    args.benchmark = False
-    args.rec_image_shape = "3, 32, 320"
-    args.rec_char_type = 'ch'
-    args.rec_batch_num = 20
-    args.max_text_length = 20
-    args.rec_char_dict_path = './ppocr/utils/ppocr_keys_v1.txt'
-    args.use_space_char = True
-    args.det_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/ch_ppocr_server_v2.0/det'
-    args.rec_algorithm = "CRNN"
-    args.rec_model_dir =  '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/rec'
-    return args
+    parser = init_args()
+    parser.add_argument("--gt_path", type=str)
+    return parser.parse_args()
 
 def main(gt_path, img_root, args):
     teds = TEDS(n_jobs=16)
 
     text_sys = TableSystem(args)
-    # jsons_gt = json.load(open(gt_path))  # gt
-    lines = open(gt_path).readlines()
+    jsons_gt = json.load(open(gt_path))  # gt
     pred_htmls = []
     gt_htmls = []
-    for item in tqdm(lines):
-        jsons_gt = json.loads(item)
-        img_name = jsons_gt['filename']
-        img = cv2.imread(os.path.join(img_root, img_name))
+    for img_name in tqdm(jsons_gt):
+        # read image
+        img = cv2.imread(os.path.join(img_root,img_name))
         pred_html = text_sys(img)
         pred_htmls.append(pred_html)
-        gt_html = jsons_gt['html']['gt']
+
+        gt_structures, gt_bboxes, gt_contents = jsons_gt[img_name]
+        gt_html, gt = get_gt_html(gt_structures, gt_contents)
         gt_htmls.append(gt_html)
     scores = teds.batch_evaluate_html(gt_htmls, pred_htmls)
-    print('teds:', sum(scores) / len(scores))
+    logger.info('teds:', sum(scores) / len(scores))
 
 
 def get_gt_html(gt_structures, gt_contents):
@@ -99,6 +68,5 @@ def get_gt_html(gt_structures, gt_contents):
 
 
 if __name__ == '__main__':
-    gt_path = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/train.json'
-    image_dir = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/src_img'
-    main(gt_path, image_dir, parse_args())
+    args = parse_args()
+    main(args.gt_path, args.image_dir, args)

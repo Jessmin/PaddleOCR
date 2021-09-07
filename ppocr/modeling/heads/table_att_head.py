@@ -69,7 +69,7 @@ class TableAttentionHead(nn.Layer):
         output_hiddens = []
         if self.training and targets is not None:
             structure = targets[0]
-            for i in range(self.max_elem_length+1):
+            for i in range(self.max_elem_length + 1):
                 elem_onehots = self._char_to_onehot(
                     structure[:, i], onehot_dim=self.elem_num)
                 (outputs, hidden), alpha = self.structure_attention_cell(

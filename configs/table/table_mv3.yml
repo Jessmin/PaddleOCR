@@ -1,21 +1,21 @@
 Global:
   use_gpu: true
-  epoch_num: 50
+  epoch_num: 10000
   log_smooth_window: 20
   print_batch_step: 5
-  save_model_dir: ./output/table_mv3/
-  save_epoch_step: 5
+  save_model_dir: ./output/table_mv3_re0/
+  save_epoch_step: 20
   # evaluation is run every 400 iterations after the 0th iteration
-  eval_batch_step: [0, 400]
+  eval_batch_step: [0, 200]
   cal_metric_during_train: True
-  pretrained_model: /home/zhaohj/Documents/checkpoint/paddOCR/pretrained/table/en_ppocr_mobile_v2.0_table_structure_train/best_accuracy
+  pretrained_model: /home/zhaohj/Documents/checkpoint/paddOCR/pretrained/table/best_accuracy
   checkpoints: 
-  save_inference_dir: /home/zhaohj/Documents/checkpoint/paddOCR/TAL/table
+  save_inference_dir: output/table_mv3/infer
   use_visualdl: True
   infer_img: doc/imgs_words/ch/word_1.jpg
   # for data or label process
   character_dict_path: ppocr/utils/dict/table_structure_dict.txt
-  character_type: en
+  character_type: zh
   max_text_length: 100
   max_elem_length: 500
   max_cell_num: 500
@@ -30,7 +30,7 @@ Optimizer:
   beta2: 0.999
   clip_norm: 5.0
   lr:
-    learning_rate: 0.001
+    learning_rate: 0.00001
   regularizer:
     name: 'L2'
     factor: 0.00000
@@ -46,7 +46,7 @@ Architecture:
   Head:
     name: TableAttentionHead
     hidden_size: 256
-    l2_decay: 0.00001
+    l2_decay: 0.0001
     loc_type: 2
 
 Loss:
@@ -64,8 +64,8 @@ Metric:
 Train:
   dataset:
     name: PubTabDataSet
-    data_dir: /home/zhaohj/Documents/dataset/Table/TAL/train_img
-    label_file_path: /home/zhaohj/Documents/dataset/Table/TAL/train_paddle.json
+    data_dir: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tables
+    label_file_path: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/train.json
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -86,13 +86,13 @@ Train:
     shuffle: True
     batch_size_per_card: 16
     drop_last: True
-    num_workers: 1
+    num_workers: 8
 
 Eval:
   dataset:
     name: PubTabDataSet
-    data_dir: /home/zhaohj/Documents/dataset/Table/TAL/train_img
-    label_file_path: /home/zhaohj/Documents/dataset/Table/TAL/val_paddle.json
+    data_dir: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tables
+    label_file_path: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/val.json
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -113,4 +113,4 @@ Eval:
     shuffle: False
     drop_last: False
     batch_size_per_card: 16
-    num_workers: 1
+    num_workers: 8
