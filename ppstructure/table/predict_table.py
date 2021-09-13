@@ -115,6 +115,8 @@ class TableSystem(object):
                     (distance(gt_box, pred_box), 1. - compute_iou(gt_box, pred_box)))  # 获取两两cell之间的L1距离和 1- IOU
             sorted_distances = distances.copy()
             # 根据距离和IOU挑选最"近"的cell
+            if len(sorted_distances)==0:
+                return matched
             sorted_distances = sorted(sorted_distances, key=lambda item: (item[1], item[0]))
             if distances.index(sorted_distances[0]) not in matched.keys():
                 matched[distances.index(sorted_distances[0])] = [i]
@@ -225,7 +227,7 @@ if __name__ == "__main__":
     args.gpu_mem = 4000
     args.use_tensorrt = False
     # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/table'
-    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
+    # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
     args.det_algorithm = 'DB'
     args.det_limit_side_len = 736
     args.det_db_thresh = 0.5
@@ -244,6 +246,7 @@ if __name__ == "__main__":
     args.det_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/ch_ppocr_server_v2.0/det'
     args.rec_algorithm = "CRNN"
     args.rec_model_dir =  '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/rec'
+    args.table_model_dir = './output/table_mv3/infer/'
     image_file = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/TableSegmentation/images/0001-0.png'
     # img = cv2.imread(image_file)
     text_sys = TableSystem(args)

@@ -8,10 +8,10 @@ Global:
   save_epoch_step: 3
   eval_batch_step: [0, 2000]
   cal_metric_during_train: true
-  pretrained_model:
+  pretrained_model: /home/zhaohj/Documents/checkpoint/paddOCR/v2/pretrained/rec/ch_PP-OCRv2_rec_train/best_accuracy
   checkpoints:
   save_inference_dir:
-  use_visualdl: false
+  use_visualdl: true
   infer_img: doc/imgs_words/ch/word_1.jpg
   character_dict_path: ppocr/utils/ppocr_keys_v1.txt
   character_type: ch
@@ -112,9 +112,9 @@ Metric:
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: ./train_data/
+    data_dir: /home/zhaohj/Documents/dataset/rec/output_data/images
     label_file_list:
-    - ./train_data/train_list.txt
+    - /home/zhaohj/Documents/dataset/rec/output_data/train.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
@@ -130,16 +130,16 @@ Train:
         - length
   loader:
     shuffle: true
-    batch_size_per_card: 128
+    batch_size_per_card: 32
     drop_last: true
     num_sections: 1
     num_workers: 8
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: ./train_data
+    data_dir: /home/zhaohj/Documents/dataset/rec/output_data/images
     label_file_list:
-    - ./train_data/val_list.txt
+    - /home/zhaohj/Documents/dataset/rec/output_data/val.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
@@ -155,5 +155,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 128
+    batch_size_per_card: 32
     num_workers: 8

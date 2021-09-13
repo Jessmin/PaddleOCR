@@ -146,7 +146,8 @@ if __name__ == "__main__":
     args.use_gpu = True
     args.gpu_mem = 4000
     args.use_tensorrt = False
-    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
+    # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
+    args.table_model_dir = './output/table_mv3/infer/'
     table_structurer = TableStructurer(args)
     # image_file='/home/zhaohj/Documents/dataset/Table/TAL/val_img/output_table/0eb8e737d43748fa92986bb7524c686f.jpg'
     image_file = './doc/table/1.png'

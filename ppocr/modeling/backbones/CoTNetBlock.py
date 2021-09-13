@@ -15,6 +15,7 @@ import paddle.nn as nn
 import paddle.nn.functional as F
 
 
+paddle.set_device('cpu')
 class CoTNetLayer(nn.Layer):
     def __init__(self, dim=512, kernel_size=3):
         super().__init__()
@@ -53,13 +54,14 @@ class CoTNetLayer(nn.Layer):
         k1 = self.key_embed(x)  # shape：bs,c,h,w  提取静态上下文信息得到key
         v = paddle.fluid.layers.reshape(self.value_embed(x), (bs, c, -1))
         # v = self.value_embed(x).view(bs, c, -1)  # shape：bs,c,h*w  得到value编码
-
         y = paddle.fluid.layers.concat(
             [k1, x], axis=1)  # shape：bs,2c,h,w  Key与Query在channel维度上进行拼接进行拼接
         att = self.attention_embed(y)  # shape：bs,c*k*k,h,w  计算注意力矩阵
         att = paddle.fluid.layers.reshape(att, (bs, c, self.kernel_size * self.kernel_size, h, w))
         att = paddle.fluid.layers.reshape(paddle.fluid.layers.reduce_mean(att,2,keep_dim=False), (bs, c, -1))
         # att = att.mean(2, keepdim=False).view(bs, c,-1)  # shape：bs,c,h*w  求平均降低维度
+        print(att.shape)
+        print(v.shape)
         k2 = F.softmax(att, axis=-1) * v  # 对每一个H*w进行softmax后
         k2 = paddle.fluid.layers.reshape(k2, (bs, c, h, w))
         # k2 = k2.view(bs, c, h, w)

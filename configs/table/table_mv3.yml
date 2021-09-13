@@ -1,12 +1,12 @@
 Global:
   use_gpu: true
-  epoch_num: 10000
+  epoch_num: 20000
   log_smooth_window: 20
   print_batch_step: 5
-  save_model_dir: ./output/table_mv3_re0/
-  save_epoch_step: 20
+  save_model_dir: ./output/table_mv3/
+  save_epoch_step: 50
   # evaluation is run every 400 iterations after the 0th iteration
-  eval_batch_step: [0, 200]
+  eval_batch_step: [0, 1000]
   cal_metric_during_train: True
   pretrained_model: /home/zhaohj/Documents/checkpoint/paddOCR/pretrained/table/best_accuracy
   checkpoints: 
@@ -64,8 +64,8 @@ Metric:
 Train:
   dataset:
     name: PubTabDataSet
-    data_dir: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tables
-    label_file_path: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/train.json
+    data_dir: /home/zhaohj/Documents/dataset/cmdd_mix/images
+    label_file_path: /home/zhaohj/Documents/dataset/cmdd_mix/train.json
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -86,13 +86,13 @@ Train:
     shuffle: True
     batch_size_per_card: 16
     drop_last: True
-    num_workers: 8
+    num_workers: 0
 
 Eval:
   dataset:
     name: PubTabDataSet
-    data_dir: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tables
-    label_file_path: /home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/val.json
+    data_dir: /home/zhaohj/Documents/dataset/cmdd_mix/images
+    label_file_path: /home/zhaohj/Documents/dataset/cmdd_mix/val.json
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -113,4 +113,4 @@ Eval:
     shuffle: False
     drop_last: False
     batch_size_per_card: 16
-    num_workers: 8
+    num_workers: 0

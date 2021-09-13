@@ -43,8 +43,8 @@ def parse_args():
     args.gpu_mem = 4000
     args.use_tensorrt = False
     # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/TAL/table'
-    args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
-    # args.table_model_dir = './output/table_mv3/infer/'
+    # args.table_model_dir = '/home/zhaohj/Documents/checkpoint/paddOCR/inference/table'
+    args.table_model_dir = './output/table_mv3/infer/'
     args.det_algorithm = 'DB'
     args.det_limit_side_len = 736
     args.det_db_thresh = 0.5
@@ -69,7 +69,6 @@ def main(gt_path, img_root, args):
     teds = TEDS(n_jobs=16)
 
     text_sys = TableSystem(args)
-    # jsons_gt = json.load(open(gt_path))  # gt
     lines = open(gt_path).readlines()
     pred_htmls = []
     gt_htmls = []
@@ -100,6 +99,8 @@ def get_gt_html(gt_structures, gt_contents):
 
 
 if __name__ == '__main__':
-    gt_path = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/val.json'
-    image_dir = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tables'
+    # gt_path = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tabnet/val.json'
+    gt_path = '/home/zhaohj/Documents/dataset/cmdd_mix/val.json'
+    # image_dir = '/home/zhaohj/Documents/dataset/signed_dataset/TableSegmentation/splerge/v2/tables'
+    image_dir = '/home/zhaohj/Documents/dataset/cmdd_mix/images'
     main(gt_path, image_dir, parse_args())
